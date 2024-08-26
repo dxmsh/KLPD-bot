@@ -14,6 +14,10 @@ class commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def prepare(self):
+        await self.bot.tree.sync()
+        print("Bot tree synced.")
+
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.tree.sync()
@@ -90,5 +94,17 @@ class commands(commands.Cog):
         response = random.choice(responses)
         await interaction.response.send_message(f"**Question:** {question}\n**Answer:** {response}")
 
+    @app_commands.command(name="ppsize", description="Find out yours or someone else's pp size.")
+    async def ppsize(self, interaction: discord.Interaction, member: discord.Member = None):
+        member = interaction.user if member is None else member
+        if str(member.id) in DEV_IDS:
+            await interaction.response.send_message('pp 2 big for the screen')
+        else:
+            sizes = ["1 inch", "2 inches", "3 inches", "4 inches",
+                    "5 inches", "6 inches", "7 inches", "no pp"]
+            await interaction.response.send_message(f'''{member.mention}'s pp is {random.choice(sizes)}''')
+
 async def setup(bot):
-    await bot.add_cog(commands(bot))
+    cog = commands(bot)
+    await bot.add_cog(cog)
+    await cog.prepare()

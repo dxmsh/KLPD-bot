@@ -18,6 +18,10 @@ class admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def prepare(self):
+        await self.bot.tree.sync()
+        print("Bot tree synced.")
+
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.tree.sync()
@@ -170,4 +174,6 @@ class RolePaginationView(View):
         self.stop()
 
 async def setup(bot):
-    await bot.add_cog(admin(bot))
+    cog = admin(bot)
+    await bot.add_cog(cog)
+    await cog.prepare()

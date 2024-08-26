@@ -1,9 +1,21 @@
 {
     "818375867029127178": {
         "user": "dim1337#7245",
+        "warnings": 2,
+        "reasons": [
+            "ok",
+            "test"
+        ],
+        "moderators": [
+            "dim1337",
+            "dim1337"
+        ]
+    },
+    "427054911054675969": {
+        "user": "ninjie.",
         "warnings": 1,
         "reasons": [
-            "ok"
+            "reice teice"
         ],
         "moderators": [
             "dim1337"

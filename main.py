@@ -17,6 +17,7 @@ bot = commands.Bot(command_prefix=PREFIX, intents=discord.Intents.all())
 
 @bot.event
 async def on_ready():
+    await load()
     print("---------READY---------")
     print(f"Logged in as: {bot.user.name}")
     print("-----------------------")
@@ -40,7 +41,7 @@ async def load():
 
 async def main():
     async with bot:
-        await load()
         await bot.start(os.getenv('BOT_TOKEN'))
+
 
 asyncio.run(main())

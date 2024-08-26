@@ -58,13 +58,13 @@ class moderation(commands.Cog):
         if user_id in warns:
             warns[user_id]['warnings'] += 1
             warns[user_id]['reasons'].append(reason)
-            warns[user_id]['moderator'].append(str(interaction.user))
+            warns[user_id]['moderators'].append(str(interaction.user))
         else:
             warns[user_id] = {
                 'user': str(member),
                 'warnings': 1,
                 'reasons': [reason],
-                'moderator': [str(interaction.user)]
+                'moderators': [str(interaction.user)]
             }
 
         try:
@@ -111,7 +111,7 @@ class moderation(commands.Cog):
             embed = discord.Embed(
                 title="Warnings",
                 description=f"Warnings for {member.mention}",
-                color=discord.Color.orange()
+                color=discord.Color.red()
             )
             embed.add_field(name="Total Warnings:", value=user_warnings['warnings'], inline=False)
             reasons_with_moderators = "\n".join(

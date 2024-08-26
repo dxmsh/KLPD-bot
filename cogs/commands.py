@@ -9,6 +9,7 @@ with open('config.json', 'r') as f:
 
 PREFIX = config['prefix']
 DEV_IDS = config['devID']
+deletedMessages = {}
 
 class commands(commands.Cog):
     def __init__(self, bot):
@@ -103,6 +104,33 @@ class commands(commands.Cog):
             sizes = ["1 inch", "2 inches", "3 inches", "4 inches",
                     "5 inches", "6 inches", "7 inches", "no pp"]
             await interaction.response.send_message(f'''{member.mention}'s pp is {random.choice(sizes)}''')
+
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        if message.author.bot:
+            return
+        deletedMessages[message.channel.id] = {
+            'content': message.content,
+            'author': message.author,
+            'time': message.created_at
+        }
+
+    @app_commands.command(name="snipe", description="Restore the recent last deleted messaeg.")
+    async def snipe(self, interaction: discord.Interaction):
+        channel_id = interaction.channel_id
+        if channel_id in deletedMessages:
+            msg = deletedMessages[channel_id]
+            embed = discord.Embed(
+                title="Deleted Message",
+                description=msg['content'],
+                color=discord.Color.red(),
+                timestamp=msg['time']
+            )
+            simpleUsername = interaction.user.name
+            embed.set_footer(text=f"Sent by {simpleUsername}")
+            await interaction.response.send_message(embed=embed)
+        else:
+            await interaction.response.send_message("Nothing to snipe.")
 
 async def setup(bot):
     cog = commands(bot)

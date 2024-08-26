@@ -101,7 +101,7 @@ class admin(commands.Cog):
 
     @app_commands.command(name="inrole", description="List members with a specific role.")
     @app_commands.describe(role="The role to list members for")
-    async def inrole(self, interaction: discord.Interaction, role: discord.Role = None):
+    async def inrole(self, interaction: discord.Interaction, role: discord.Role):
         if role is None:
             return await interaction.response.send_message('There is no role with that name.', ephemeral=False)
 

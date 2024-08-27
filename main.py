@@ -41,10 +41,12 @@ async def check_status():
                     if role not in member.roles:
                         await member.add_roles(role)
                         await channel.send(f"Assigned {role.name} to {member.display_name}")
+                        await member.send(f"You were given the **Sexy as Fuck** role in KLPD.")
                 else:
                     if role in member.roles:
                         await member.remove_roles(role)
                         await channel.send(f"Removed {role.name} from {member.display_name}")
+                        await member.send(f"You were removed from the **Sexy as Fuck** role in KLPD.")
 
 @bot.event
 async def on_ready():

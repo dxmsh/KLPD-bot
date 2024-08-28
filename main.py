@@ -15,7 +15,7 @@ PREFIX = config['prefix']
 
 bot = commands.Bot(command_prefix=PREFIX, intents=discord.Intents.all())
 
-@tasks.loop(seconds=240)
+@tasks.loop(seconds=120)
 async def check_status():
     guild_id = 493063429129502720
     role_id = 771808654805958657
@@ -65,6 +65,33 @@ async def on_message(message):
             print(f"Error in bot mention: {e}")
 
     await bot.process_commands(message)
+
+@bot.command(name="inactive_users", description="Lists inactive users")
+async def inactive_users(ctx):
+    await ctx.send("checking inactive users")
+    inactive_threshold = 30  # Days of inactivity to consider
+    inactive_users = []
+
+    for member in ctx.guild.members:
+        if member.bot:
+            continue  # Skip bots
+	print(f"message check {member}")
+        last_message_time = member.last_message.created_at
+        if last_message_time is None:
+            # No messages from this member
+            inactive_users.append(member)
+        else:
+            # Calculate duration since last message
+            time_since_last_message = (ctx.message.created_at - last_message_time).days
+            if time_since_last_message >= inactive_threshold:
+                inactive_users.append(member)
+
+    # Send the list of inactive users
+    if inactive_users:
+        await ctx.send(f"Inactive users: {', '.join(str(user) for user in inactive_users)}")
+    else:
+        await ctx.send("No inactive users found.")
+
 
 async def load():
     await bot.load_extension('jishaku')

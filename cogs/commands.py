@@ -109,10 +109,13 @@ class commands(commands.Cog):
     async def on_message_delete(self, message):
         if message.author.bot:
             return
-        deletedMessages[message.channel.id] = {
+
+        attachments = [attachment.url for attachment in message.attachments]
+        deletedMessages[message.channel.id  ] = {
             'content': message.content,
             'author': message.author,
-            'time': message.created_at
+            'time': message.created_at,
+            'attachments': attachments
         }
 
     @app_commands.command(name="snipe", description="Restore the recent last deleted message.")
@@ -128,6 +131,14 @@ class commands(commands.Cog):
             )
             simpleUsername = interaction.user.name
             embed.set_footer(text=f"Sent by {simpleUsername}")
+            if msg['attachments']:
+                for i, attachment in enumerate(msg['attachments'], 1):
+                    embed.add_field(name=f"Attachment {i}", value=attachment, inline=False)
+
+                # Set the image if the first attachment is an image
+                first_attachment = msg['attachments'][0].lower()
+                if first_attachment.endswith(('png', 'jpg', 'jpeg', 'gif')):
+                    embed.set_image(url=first_attachment)
             await interaction.response.send_message(embed=embed)
         else:
             await interaction.response.send_message("Nothing to snipe.")

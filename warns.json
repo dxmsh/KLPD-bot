@@ -20,5 +20,25 @@
         "moderators": [
             "dim1337"
         ]
+    },
+    "741184609131298837": {
+        "user": "bootaaaa",
+        "warnings": 1,
+        "reasons": [
+            "test"
+        ],
+        "moderators": [
+            "dim1337"
+        ]
+    },
+    "198456297698361344": {
+        "user": "haashim.",
+        "warnings": 1,
+        "reasons": [
+            "oreo"
+        ],
+        "moderators": [
+            "dim1337"
+        ]
     }
 }

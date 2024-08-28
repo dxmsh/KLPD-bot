@@ -16,12 +16,12 @@ class moderation(commands.Cog):
         self.bot = bot
 
     async def prepare(self):
-        await self.bot.tree.sync()
+        #await self.bot.tree.sync()
         print("Bot tree synced.")
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.tree.sync()
+        # await self.bot.tree.sync()
         print("moderation.py loaded.")
 
     @app_commands.command(name="warn", description="Warn a user.")
@@ -127,4 +127,4 @@ class moderation(commands.Cog):
 async def setup(bot):
     cog = moderation(bot)
     await bot.add_cog(cog)
-    await cog.prepare()
+    # await cog.prepare()

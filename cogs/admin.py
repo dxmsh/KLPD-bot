@@ -24,7 +24,6 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.tree.sync()
         print("admin.py loaded.")
 
     @app_commands.checks.has_permissions(administrator=True)
@@ -176,4 +175,4 @@ class RolePaginationView(View):
 async def setup(bot):
     cog = admin(bot)
     await bot.add_cog(cog)
-    await cog.prepare()
+    # await cog.prepare()

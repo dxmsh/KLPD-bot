@@ -52,8 +52,9 @@ async def check_status():
 
 @bot.event
 async def on_ready():
-    check_status.start()
     await load()
+    await bot.tree.sync()
+    check_status.start()
     print("---------READY---------")
     print(f"Logged in as: {bot.user.name}")
     print("-----------------------")
@@ -77,7 +78,9 @@ async def load():
 
 async def main():
     async with bot:
+
         await bot.start(os.getenv('BOT_TOKEN'))
+
 
 
 asyncio.run(main())

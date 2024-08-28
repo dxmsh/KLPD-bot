@@ -35,7 +35,7 @@ class Levelling(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.tree.sync()
+        #await self.bot.tree.sync()
         print("levels.py loaded.")
 
     def load_data(self):
@@ -147,4 +147,4 @@ class Levelling(commands.Cog):
 async def setup(bot):
     cog = Levelling(bot)
     await bot.add_cog(cog)
-    await cog.prepare()
+    #await cog.prepare()

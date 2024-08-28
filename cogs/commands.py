@@ -21,7 +21,7 @@ class commands(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.tree.sync()
+        # await self.bot.tree.sync()
         print("commands.py loaded.")
 
     @app_commands.command(name="ping", description="Check the bot's latency.")
@@ -115,7 +115,7 @@ class commands(commands.Cog):
             'time': message.created_at
         }
 
-    @app_commands.command(name="snipe", description="Restore the recent last deleted messaeg.")
+    @app_commands.command(name="snipe", description="Restore the recent last deleted message.")
     async def snipe(self, interaction: discord.Interaction):
         channel_id = interaction.channel_id
         if channel_id in deletedMessages:
@@ -135,4 +135,4 @@ class commands(commands.Cog):
 async def setup(bot):
     cog = commands(bot)
     await bot.add_cog(cog)
-    await cog.prepare()
+    # await cog.prepare()

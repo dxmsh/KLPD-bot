@@ -6,7 +6,7 @@ import json
 import asyncio
 from typing import Optional
 from humanfriendly import parse_timespan, InvalidTimespan
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 with open('config.json', 'r') as f:
     config = json.load(f)
@@ -202,15 +202,6 @@ class moderation(commands.Cog):
                 await mod_channel.send(embed=embed)
                 await interaction.response.send_message(embed=embed)
 
-
-
-        for ban_entry in banned_users:
-            user = ban_entry.user
-
-            if (user.name, user.discriminator) == (member_name, member_discriminator):
-                await ctx.guild.unban(user)
-                await ctx.send(f'Unbanned {user.name}#{user.discriminator}')
-
     @app_commands.command(name="mute", description="Mutes a member.")
     async def   mute(self, interaction: discord.Interaction, member: discord.Member, reason: str = "No reason provided", duration: str = '1h'):
         if not interaction.user.guild_permissions.administrator:
@@ -257,6 +248,28 @@ class moderation(commands.Cog):
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/443051446942957568/9dee701c40f36b64b6e11f8dfeb110f9.png?size=1024")
         await mod_channel.send(embed=embed)
         await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="purge", description="Purge messages in the channel.")
+    async def purge(self, interaction: discord.Interaction, amount: int, reason: str = "No reason provided."):
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message("You do not have permission to use this command.", ephemeral=False)
+            return
+        if amount > 200:
+            await interaction.response.send_message("You can purge a maximum of 200 messages at once.", ephemeral=True)
+
+        await interaction.channel.purge(limit=amount, reason=reason)
+        mod_channel = self.bot.get_channel(mod_channel_id)
+        embed = discord.Embed(
+            title="Channnel Purged!",
+            color=discord.Color.red()
+        )
+        embed.add_field(name="Number of Messages:", value=f"{amount}", inline=False)
+        embed.add_field(name="Channel", value=interaction.channel.name, inline=False)
+        embed.add_field(name="Reason:", value=reason, inline=False)
+        embed.set_footer(text=f"Purged by {interaction.user.name}", icon_url=interaction.user.avatar.url)
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/443051446942957568/9dee701c40f36b64b6e11f8dfeb110f9.png?size=1024")
+        await mod_channel.send(embed=embed)
+        await interaction.followup.send(embed=embed)
 
 async def setup(bot):
     cog = moderation(bot)

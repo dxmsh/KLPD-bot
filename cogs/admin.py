@@ -123,6 +123,22 @@ class admin(commands.Cog):
         view = RolePaginationView(composite_members, role.name, interaction.user)
         await interaction.response.send_message(embed=embed, view=view)
 
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def say(self, ctx, channel_id: int, *, message: str):
+        channel = self.bot.get_channel(channel_id)
+        if channel is None:
+            await ctx.send('Channel not found')
+            return
+
+        try:
+            await channel.send(message)
+            await ctx.send(f'Message sent to {channel.name}!')
+        except discord.Forbidden:
+            await ctx.send('I do not have permission to send messages in that channel.')
+        except discord.HTTPException as e:
+            await ctx.send(f'Failed to send message: {e}')
+
 class RolePaginationView(View):
     def __init__(self, composite_members, role_name, author, timeout=60):
         super().__init__()
@@ -171,6 +187,8 @@ class RolePaginationView(View):
             child.disabled = True
         await interaction.response.edit_message(content="Command cancelled by user.", embed=None, view=self)
         self.stop()
+
+
 
 async def setup(bot):
     cog = admin(bot)

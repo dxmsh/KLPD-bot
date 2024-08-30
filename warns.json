@@ -40,5 +40,29 @@
         "moderators": [
             "dim1337"
         ]
+    },
+    "363906350281129985": {
+        "user": "theghost753",
+        "warnings": 1,
+        "reasons": [
+            "moderating me"
+        ],
+        "moderators": [
+            "dim1337"
+        ]
+    },
+    "772336857970114590": {
+        "user": "dim1337",
+        "warnings": 3,
+        "reasons": [
+            "No reason provided",
+            "No reason provided",
+            "moderating a moderator"
+        ],
+        "moderators": [
+            "ninjie.",
+            "ninjie.",
+            "ninjie."
+        ]
     }
 }

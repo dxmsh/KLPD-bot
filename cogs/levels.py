@@ -24,10 +24,10 @@ LEVEL_ROLES = {
 }
 
 class Levelling(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self.user_data = self.load_data()
-        self.daily_reset.start()
+        def __init__(self, bot):
+            self.bot = bot
+            self.user_data = self.load_data()
+            self.daily_reset.start()
 
     async def prepare(self):
         await self.bot.tree.sync()

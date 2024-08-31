@@ -13,11 +13,13 @@
     },
     "427054911054675969": {
         "user": "ninjie.",
-        "warnings": 1,
+        "warnings": 2,
         "reasons": [
-            "reice teice"
+            "reice teice",
+            "being gay"
         ],
         "moderators": [
+            "dim1337",
             "dim1337"
         ]
     },
@@ -53,13 +55,15 @@
     },
     "772336857970114590": {
         "user": "dim1337",
-        "warnings": 3,
+        "warnings": 4,
         "reasons": [
             "No reason provided",
             "No reason provided",
-            "moderating a moderator"
+            "moderating a moderator",
+            "discrimination"
         ],
         "moderators": [
+            "ninjie.",
             "ninjie.",
             "ninjie.",
             "ninjie."

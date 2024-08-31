@@ -8,6 +8,8 @@ import time
 import json
 import asyncio
 
+mod_channel_id = 1278379703589404732
+
 with open('config.json', 'r') as f:
     config = json.load(f)
 
@@ -17,6 +19,7 @@ DEV_IDS = [int(id) for id in config['devID']]
 class admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.mod_channel = self.bot.get_channel(mod_channel_id)
 
     async def prepare(self):
         await self.bot.tree.sync()
@@ -139,6 +142,48 @@ class admin(commands.Cog):
         except discord.HTTPException as e:
             await ctx.send(f'Failed to send message: {e}')
 
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.command(name="giverole", description="Give a role to a user.")
+    async def giverole(self, interaction: discord.Interaction, user: discord.Member, role: discord.Role):
+        if interaction.guild.me.guild_permissions.manage_roles:
+            if role.position < interaction.guild.me.top_role.position:
+                await user.add_roles(role)
+                embed = discord.Embed(
+                title="Role Assigned!",
+                color=discord.Color.green()
+                )
+                embed.add_field(name="User:", value=f"{user.mention}", inline=False)
+                embed.add_field(name="Role:", value=f"{role.mention}", inline=False)
+                embed.set_footer(text=f"Assigned by {interaction.user.name}", icon_url=interaction.user.avatar.url)
+                embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/443051446942957568/9dee701c40f36b64b6e11f8dfeb110f9.png?size=1024")
+                await self.mod_channel.send(embed=embed)
+                await interaction.response.send_message(embed=embed)
+            else:
+                await interaction.response.send_message("I cannot assign this role because it is above my highest role.", ephemeral=True)
+        else:
+            await interaction.response.send_message("I do not have permission to manage roles.", ephemeral=True)
+
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.command(name="removerole", description="Remove a role from a user.")
+    async def removerole(self, interaction: discord.Interaction, user: discord.Member, role: discord.Role):
+        if interaction.guild.me.guild_permissions.manage_roles:
+            if role.position < interaction.guild.me.top_role.position:
+                await user.remove_roles(role)
+                embed = discord.Embed(
+                title="Role Removed!",  
+                color=discord.Color.red()
+                )
+                embed.add_field(name="User:", value=f"{user.mention}", inline=False)
+                embed.add_field(name="Role:", value=f"{role.mention}", inline=False)
+                embed.set_footer(text=f"Removed by {interaction.user.name}", icon_url=interaction.user.avatar.url)
+                embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/443051446942957568/9dee701c40f36b64b6e11f8dfeb110f9.png?size=1024")
+                await self.mod_channel.send(embed=embed)
+                await interaction.response.send_message(embed=embed)
+            else:
+                await interaction.response.send_message("I cannot remove this role because it is above my highest role.", ephemeral=True)
+        else:
+            await interaction.response.send_message("I do not have permission to manage roles.", ephemeral=True)
+
 class RolePaginationView(View):
     def __init__(self, composite_members, role_name, author, timeout=60):
         super().__init__()
@@ -187,6 +232,8 @@ class RolePaginationView(View):
             child.disabled = True
         await interaction.response.edit_message(content="Command cancelled by user.", embed=None, view=self)
         self.stop()
+
+
 
 
 

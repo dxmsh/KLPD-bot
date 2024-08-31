@@ -5,6 +5,7 @@ from discord.ui import Button, View, Select, Modal, TextInput
 import asyncio
 import json
 import os
+from datetime import datetime
 
 with open('config.json', 'r') as f:
     config = json.load(f)
@@ -213,6 +214,49 @@ class Image (Modal):
         self.original_embed.set_image(url=self.imageurl)
         await interaction.response.edit_message(embed=self.original_embed)
 
+class LoadJson(Modal):
+    def __init__(self, original_embed: discord.Embed):
+        super().__init__(title="Load Embed JSON")
+        self.original_embed = original_embed
+        self.json_input = TextInput(
+            label="JSON Data",
+            placeholder="Paste your JSON here...",
+            style=discord.TextStyle.paragraph,
+            required=True
+        )
+        self.add_item(self.json_input)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        try:
+            embed_dict = json.loads(self.json_input.value)
+
+            # Handle the color conversion
+            if 'color' in embed_dict:
+                if isinstance(embed_dict['color'], str):
+                    if embed_dict['color'].startswith('#'):
+                        embed_dict['color'] = int(embed_dict['color'][1:], 16)
+                    elif embed_dict['color'].startswith('0x'):
+                        embed_dict['color'] = int(embed_dict['color'], 16)
+                    else:
+                        embed_dict['color'] = int(embed_dict['color'])
+
+            # Handle timestamp conversion
+            if 'timestamp' in embed_dict:
+                if isinstance(embed_dict['timestamp'], str):
+                    embed_dict['timestamp'] = embed_dict['timestamp']
+                else:
+                    # Convert the timestamp to an ISO format string
+                    embed_dict['timestamp'] = str(embed_dict['timestamp'])
+
+            new_embed = discord.Embed.from_dict(embed_dict)
+            await interaction.response.edit_message(embed=new_embed)
+        except json.JSONDecodeError:
+            await interaction.response.send_message("Invalid JSON. Please check your input and try again.", ephemeral=True)
+        except Exception as e:
+            await interaction.response.send_message(f"An error occurred: {e}", ephemeral=True)
+
+
+
 class EmbedCreator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -237,6 +281,9 @@ class EmbedCreator(commands.Cog):
             button10 = Button(label="Footer", style=discord.ButtonStyle.green, custom_id="footer")
             button11 = Button(label="Image", style=discord.ButtonStyle.green, custom_id="image", emoji="\U0001f5bc")
             button12 = Button(label="Send Embed", style=discord.ButtonStyle.green, custom_id="sendembed")
+            button13 = Button(label="Load JSON", style=discord.ButtonStyle.secondary, custom_id="load_json")
+            button14 = Button(label="Fetch JSON", style=discord.ButtonStyle.secondary, custom_id="fetch_json")
+
             embed.set_footer(text="Bot developed by dim1337", icon_url="https://images-ext-1.discordapp.net/external/RWw3RHqMl6MFezmrxGTPhqxEQXexWkF0vXLkOA_Fr44/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/772336857970114590/a_f34d91ed491fe30dcc1e44b72c195b86.gif")
 
         else:
@@ -255,6 +302,8 @@ class EmbedCreator(commands.Cog):
         view.add_item(button10)
         view.add_item(button11)
         view.add_item(button12)
+        view.add_item(button13)
+        view.add_item(button14)
         await interaction.response.send_message(embed=embed, view=view)
 
     @commands.Cog.listener()
@@ -288,6 +337,11 @@ class EmbedCreator(commands.Cog):
                     await interaction.response.send_modal(Image(original_embed))
                 elif interaction.data['custom_id'] == 'sendembed':
                     await interaction.response.send_message("Please mention a channel or provide a channel ID.", ephemeral=False)
+                elif interaction.data['custom_id'] == 'load_json':
+                    await interaction.response.send_modal(LoadJson(original_embed))
+                elif interaction.data['custom_id'] == 'fetch_json':
+                    embed_json = original_embed.to_dict()
+                    await interaction.response.send_message(f"```json\n{json.dumps(embed_json, indent=2)}\n```", ephemeral=True)
 
                     def check(m):
                         return m.author == interaction.user and (m.content.startswith("<#") or m.content.isdigit())

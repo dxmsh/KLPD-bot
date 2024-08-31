@@ -15,7 +15,7 @@ load_dotenv()
 PREFIX = config['prefix']
 
 bot = commands.Bot(command_prefix=PREFIX, intents=discord.Intents.all())
-@bot.event              
+@bot.event
 async def on_ready():
     await load()
     print("---------READY---------")
